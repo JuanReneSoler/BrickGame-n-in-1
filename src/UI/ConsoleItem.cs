@@ -2,8 +2,8 @@ namespace UI
 {
   class ConsoleItem
   {
-    protected int _x;
-    protected int _y;
+    private int _x;
+    private int _y;
     public virtual int X
     {
       get => _x;
@@ -18,14 +18,14 @@ namespace UI
 
     public ConsoleItem(int x, int y)
     {
-      X = x;
-      Y = y;
+      _x = x;
+      _y = y;
       Template = ' ';
     }
 
     public override string ToString()
     {
-      Console.SetCursorPosition(X, Y);
+      Console.SetCursorPosition(_x, _y);
       return Template.ToString();
     }
   }

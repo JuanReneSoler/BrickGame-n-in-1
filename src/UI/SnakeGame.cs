@@ -4,23 +4,30 @@ namespace UI
   {
     public override int X
     {
-      get => base.X;
       set
       {
-	if(Previous != null) Previous.X = _x;
+	if(Previous != null && value != X)
+	{
+	  Previous.X = X;
+	  Previous.Y = Y;
+	}
 	base.X = value;
       }
     }
-
+    
     public override int Y
     {
-      get => base.Y;
       set
       {
-	if(Previous != null) Previous.Y = _y;
+	if(Previous != null && value != Y)
+	{
+	  Previous.X = X;
+	  Previous.Y = Y;
+	}
 	base.Y = value;
       }
     }
+
     public LinkedConsoleItem? Previous { get; set; }
     public LinkedConsoleItem(int x, int y) : base(x, y){}
   }
@@ -30,6 +37,7 @@ namespace UI
     List<LinkedConsoleItem> _snake;
     bool _isRunning;
     ConsoleKey _pressedKey;
+    int _elapsed;
 
     SnakeGame()
     {
@@ -47,6 +55,7 @@ namespace UI
 
       _pressedKey = ConsoleKey.RightArrow;
       _isRunning = true;
+      _elapsed = 200;
     }
 
     void Close() => _isRunning = false;
@@ -64,22 +73,10 @@ namespace UI
       var lp = _snake.Count - 1;
       switch(_pressedKey)
       {
-	case ConsoleKey.UpArrow: 
-	  _snake[lp].Y -= 1;
-	  _snake[lp].Template = '^'; 
-	  break;
-	case ConsoleKey.DownArrow: 
-	  _snake[lp].Y += 1;
-	  _snake[lp].Template = 'v'; 
-	  break;
-	case ConsoleKey.LeftArrow: 
-	  _snake[lp].X -= 1;
-	  _snake[lp].Template = '<'; 
-	  break;
-	case ConsoleKey.RightArrow: 
-	  _snake[lp].X += 1; 
-	  _snake[lp].Template = '>'; 
-	  break;
+	case ConsoleKey.UpArrow: _snake[lp].Y -= 1; _snake[lp].Template = '^'; break;
+	case ConsoleKey.DownArrow: _snake[lp].Y += 1; _snake[lp].Template = 'v'; break;
+	case ConsoleKey.LeftArrow: _snake[lp].X -= 1; _snake[lp].Template = '<'; break;
+	case ConsoleKey.RightArrow: _snake[lp].X += 1; _snake[lp].Template = '>'; break;
       }
     }
 
@@ -105,7 +102,7 @@ namespace UI
 	    case ConsoleKey.Q: snakeGame.Close(); break;
 	  }
 	}
-      	Thread.Sleep(200);
+      	Thread.Sleep(snakeGame._elapsed);
       }
     }
   }
