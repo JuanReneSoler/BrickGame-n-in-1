@@ -1,74 +1,111 @@
 namespace UI
 {
+  class LinkedConsoleItem : ConsoleItem
+  {
+    public override int X
+    {
+      get => base.X;
+      set
+      {
+	if(Previous != null) Previous.X = _x;
+	base.X = value;
+      }
+    }
+
+    public override int Y
+    {
+      get => base.Y;
+      set
+      {
+	if(Previous != null) Previous.Y = _y;
+	base.Y = value;
+      }
+    }
+    public LinkedConsoleItem? Previous { get; set; }
+    public LinkedConsoleItem(int x, int y) : base(x, y){}
+  }
+
   class SnakeGame
   {
-    List<ConsoleItem> _snake;
-    ConsoleItem _fruit;
-    int _puntaje;
-    int _elapse;
-    MovementDireccion _direction;
+    List<LinkedConsoleItem> _snake;
+    bool _isRunning;
+    ConsoleKey _pressedKey;
 
     SnakeGame()
     {
-      _snake = new List<ConsoleItem>
+      _snake = new List<LinkedConsoleItem>
       {
-	new ConsoleItem{ X = 10, Y = 10, Template = '0'},
-	new ConsoleItem{ X = 11, Y = 10, Template = '0'},
-	new ConsoleItem{ X = 12, Y = 10, Template = '0'},
-	new ConsoleItem{ X = 13, Y = 10, Template = '>'}
+	new LinkedConsoleItem(10, 10){ Template = '0' },
+	new LinkedConsoleItem(11, 10){ Template = '0' },
+	new LinkedConsoleItem(12, 10){ Template = '0' },
+	new LinkedConsoleItem(13, 10){ Template = '>' }
       };
 
-      _fruit = new ConsoleItem{ X = 0, Y = 0, Template = '@' };
+      _snake[3].Previous = _snake[2];
+      _snake[2].Previous = _snake[1];
+      _snake[1].Previous = _snake[0];
 
-      _puntaje = 0;
-      _elapse = 100;
-      _direction = MovementDireccion.Right;
+      _pressedKey = ConsoleKey.RightArrow;
+      _isRunning = true;
+    }
+
+    void Close() => _isRunning = false;
+
+    bool Render()
+    {
+      Console.Clear();
+      _snake.ForEach(x => Console.Write(x.ToString()));
+      SnakeMove();
+      return _isRunning;
     }
 
     void SnakeMove()
     {
-      _snake.ForEach(i => 
-	  {
-	    switch(_direction)
-	    {
-	      case MovementDireccion.Up: i.Y--; break;
-	      case MovementDireccion.Down: i.Y++; break;
-	      case MovementDireccion.Left: i.X--; break;
-	      case MovementDireccion.Right: i.X++; break;
-	    }
-	  });
-      Thread.Sleep(_elapse);
+      var lp = _snake.Count - 1;
+      switch(_pressedKey)
+      {
+	case ConsoleKey.UpArrow: 
+	  _snake[lp].Y -= 1;
+	  _snake[lp].Template = '^'; 
+	  break;
+	case ConsoleKey.DownArrow: 
+	  _snake[lp].Y += 1;
+	  _snake[lp].Template = 'v'; 
+	  break;
+	case ConsoleKey.LeftArrow: 
+	  _snake[lp].X -= 1;
+	  _snake[lp].Template = '<'; 
+	  break;
+	case ConsoleKey.RightArrow: 
+	  _snake[lp].X += 1; 
+	  _snake[lp].Template = '>'; 
+	  break;
+      }
     }
 
-    void MoveUp() => _direction = MovementDireccion.Up;
-    void MoveDown() => _direction = MovementDireccion.Down;
-    void MoveLeft() => _direction = MovementDireccion.Left;
-    void MoveRight() => _direction = MovementDireccion.Right;
+    void MoveUp() => _pressedKey = ConsoleKey.UpArrow;
+    void MoveDown() => _pressedKey = ConsoleKey.DownArrow;
+    void MoveLeft() => _pressedKey = ConsoleKey.LeftArrow;
+    void MoveRight() => _pressedKey = ConsoleKey.RightArrow;
 
     public static void Init()
     {
       var snakeGame = new SnakeGame();
-      var isRunning = true;
 
-      while(isRunning)
+      while(snakeGame.Render())
       {
-  	Console.Clear();
-	Console.Write(string.Join(string.Empty, snakeGame._snake));
-	Console.Write(snakeGame._fruit);
-	snakeGame.SnakeMove();
 	if(Console.KeyAvailable)
 	{
-	  var keyPress = Console.ReadKey(true);
-
-	  switch(keyPress.Key)
+	  switch(Console.ReadKey(true).Key)
 	  {
 	    case ConsoleKey.UpArrow: snakeGame.MoveUp(); break;
 	    case ConsoleKey.DownArrow: snakeGame.MoveDown(); break;
 	    case ConsoleKey.LeftArrow: snakeGame.MoveLeft(); break;
 	    case ConsoleKey.RightArrow: snakeGame.MoveRight(); break;
-	    case ConsoleKey.Q: isRunning = false; break;
+	    case ConsoleKey.Q: snakeGame.Close(); break;
 	  }
 	}
+      	Thread.Sleep(200);
       }
     }
   }

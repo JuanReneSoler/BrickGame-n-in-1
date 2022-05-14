@@ -25,7 +25,7 @@ namespace UI
     public override string ToString() => $@"
       WELCOME TO BRICKGAME N IN 1
 
-      SELECT TE NEXT GAMES TO PLAY
+      SELECT THE NEXT GAMES TO PLAY
 	  {Cursor(0)} SNAKE
 	  {Cursor(1)} TANKS
 	  {Cursor(2)} TETRIS

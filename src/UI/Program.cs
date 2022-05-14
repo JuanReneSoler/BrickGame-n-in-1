@@ -20,7 +20,8 @@ while(isRunning)
       Console.Clear();
       isRunning = false;
       break;
-    case ConsoleKey.Enter: PlayerLauncher.Play(menu.GetItemSelected()); break;
+    case ConsoleKey.Enter: menu.GetItemSelected()
+	.GetMethod("Init")?.Invoke(null, null); break;
   }
 }
 
