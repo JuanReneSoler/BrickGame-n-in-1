@@ -38,6 +38,9 @@ namespace UI
     bool _isRunning;
     ConsoleKey _pressedKey;
     int _elapsed;
+    ConsoleItem _fruit;
+    Random rX;
+    Random rY;
 
     SnakeGame()
     {
@@ -56,6 +59,9 @@ namespace UI
       _pressedKey = ConsoleKey.RightArrow;
       _isRunning = true;
       _elapsed = 200;
+      rX = new Random();
+      rY = new Random();
+      _fruit = new ConsoleItem(rX.Next(0, Console.BufferWidth), rY.Next(0, Console.BufferHeight)){ Template = '@'};
     }
 
     void Close() => _isRunning = false;
@@ -64,6 +70,7 @@ namespace UI
     {
       Console.Clear();
       _snake.ForEach(x => Console.Write(x.ToString()));
+      Console.Write(_fruit);
       SnakeMove();
       return _isRunning;
     }
@@ -71,12 +78,22 @@ namespace UI
     void SnakeMove()
     {
       var lp = _snake.Count - 1;
+      var head = _snake[lp];
       switch(_pressedKey)
       {
-	case ConsoleKey.UpArrow: _snake[lp].Y -= 1; _snake[lp].Template = '^'; break;
-	case ConsoleKey.DownArrow: _snake[lp].Y += 1; _snake[lp].Template = 'v'; break;
-	case ConsoleKey.LeftArrow: _snake[lp].X -= 1; _snake[lp].Template = '<'; break;
-	case ConsoleKey.RightArrow: _snake[lp].X += 1; _snake[lp].Template = '>'; break;
+	case ConsoleKey.UpArrow: head.Y -= 1; head.Template = '^'; break;
+	case ConsoleKey.DownArrow: head.Y += 1; head.Template = 'v'; break;
+	case ConsoleKey.LeftArrow: head.X -= 1; head.Template = '<'; break;
+	case ConsoleKey.RightArrow: head.X += 1; head.Template = '>'; break;
+      }
+      if(head.X == _fruit.X && head.Y == _fruit.Y)
+      {
+	var first = _snake[0];
+	var nFirst = new LinkedConsoleItem(first.X, first.Y){ Template = '0'};
+	first.Previous = nFirst;
+	_snake.Insert(0, nFirst);
+	_fruit.X = rX.Next(0, Console.BufferWidth);
+	_fruit.Y = rY.Next(0, Console.BufferHeight);
       }
     }
 
