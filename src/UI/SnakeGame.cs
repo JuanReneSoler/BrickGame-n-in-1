@@ -69,7 +69,7 @@ namespace UI
     bool Render()
     {
       Console.Clear();
-      _snake.ForEach(x => Console.Write(x.ToString()));
+      _snake.ForEach(x => Console.Write(x));
       Console.Write(_fruit);
       SnakeMove();
       return _isRunning;
