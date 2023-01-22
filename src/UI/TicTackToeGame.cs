@@ -1,8 +1,8 @@
 namespace UI
 {
-  class TicTakToeGame
-  {
-    public static void Init()
-    {}
-  }
+    class TicTakToeGame
+    {
+        public static void Init()
+        { }
+    }
 }

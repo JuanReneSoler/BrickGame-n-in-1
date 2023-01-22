@@ -1,8 +1,8 @@
 namespace UI
 {
-  class LifeGame
-  {
-    public static void Init()
-    {}
-  }
+    class LifeGame
+    {
+        public static void Init()
+        { }
+    }
 }

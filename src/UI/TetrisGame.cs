@@ -1,8 +1,8 @@
 namespace UI
 {
-  class TetrisGame
-  {
-    public static void Init()
-    {}
-  }
+    class TetrisGame
+    {
+        public static void Init()
+        { }
+    }
 }

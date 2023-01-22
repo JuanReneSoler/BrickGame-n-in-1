@@ -1,6 +1,7 @@
+
 namespace UI
 {
-    class TanksGame
+    class GalagaGame
     {
         public static void Init()
         { }

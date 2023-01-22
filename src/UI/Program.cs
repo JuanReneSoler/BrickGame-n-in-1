@@ -1,27 +1,47 @@
 ﻿using UI;
 
 var menu = new Menu();
+menu.AddItem<SnakeGame>("Snake");
+menu.AddItem<TanksGame>("Tanks");
+menu.AddItem<TetrisGame>("Tetris");
+menu.AddItem<TicTakToeGame>("Tic Tak Toe");
+menu.AddItem<BreakoutGame>("Breakout");
+menu.AddItem<LifeGame>("Game of Life");
+menu.AddItem<CarsGame>("Cars");
+menu.AddItem<GalagaGame>("Galaga");
+
 var isRunning = true;
 Console.CursorVisible = false;
 
-while(isRunning)
+Action _exitGame = () =>
 {
-  Console.Clear();
-  Console.WriteLine(menu.ToString());
+    Console.CursorVisible = true;
+    Console.Clear();
+    isRunning = false;
+};
 
-  var keyPress = Console.ReadKey(true);
+while (isRunning)
+{
+    Console.Clear();
+    Console.WriteLine(menu.ToString());
 
-  switch(keyPress.Key)
-  {
-    case ConsoleKey.UpArrow: menu.CursorMoveUp(); break;
-    case ConsoleKey.DownArrow: menu.CursorMoveDown(); break;
-    case ConsoleKey.Q: 
-      Console.CursorVisible = true; 
-      Console.Clear();
-      isRunning = false;
-      break;
-    case ConsoleKey.Enter: menu.GetItemSelected()
-	.GetMethod("Init")?.Invoke(null, null); break;
-  }
+    var keyPress = Console.ReadKey(true);
+
+    switch (keyPress.Key)
+    {
+        case ConsoleKey.UpArrow:
+            menu.CursorMoveUp();
+            break;
+        case ConsoleKey.DownArrow:
+            menu.CursorMoveDown();
+            break;
+        case ConsoleKey.Q:
+	    _exitGame();
+            break;
+        case ConsoleKey.Enter:
+            menu.GetItemSelected()
+	    .PlayGame();
+	    break;
+    }
 }
 
